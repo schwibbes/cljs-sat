@@ -7,7 +7,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {}))
+(defonce app-state (atom {:unit "" :clauses "#  1 XOR 2, (-1) path impossible\n-1 -2 \n -1" }))
 
 (defn input-unit []
   [:p
@@ -52,20 +52,21 @@
 (defn complete [] 
   (-> @app-state
       (state-to-input)
+      (vector)
       (solver/solve)
       (result-line "complete")))
 
 (defn entrypoint []
   [:div.container
-    [:div.jumbotron
+    [:div
      [:h1 "way too simple SAT-solver running in the browser"]
      [:p "for educational purposes only;)"]]
     [:div
      [:div
       (input-unit)
       (input-clauses)
-      (input)
-      (simplified)
+      #_(input)
+      #_(simplified)
       (complete)]]
     [:div.col]])
 
