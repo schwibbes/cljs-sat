@@ -1,7 +1,6 @@
-(ns schwibbes.sat-cljs.solver
-  (:require [schwibbes.sat-cljs.data :as data]))
+(ns schwibbes.sat-cljs.solver)
 
-(defn- propagate-or
+(defn- propagate
   "simplify a disjunctive clause by applying lit to it"
   [lit clause]
   (if (contains? clause lit) :solved (disj clause (- lit))))
@@ -15,7 +14,7 @@
 
 (defn- apply-unit [unit clauses]
   (->> clauses 
-    (map (partial propagate-or unit))
+    (map (partial propagate unit))
     (remove #(= % :solved))))
 
 (defn apply-units
@@ -62,8 +61,8 @@
                                    (update current :unit conj neg))]
         (recur queue+ (dec n)))))))
 
-(defn from-clauses
-  "create solver input data structur from coll of or-clauses"
+(defn clauses-to-data
+  "create solver's internal data structure from coll of cnf-clauses"
   [coll]
   {:status :open
    :asserted #{}

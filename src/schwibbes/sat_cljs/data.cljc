@@ -14,23 +14,25 @@
     (map to-int)
     (remove nil?)))
 
-(defn- starts-with-digit [s]
-  (re-matches #"^[\-\d].*$" s))
+(defn- ints-only? [s]
+  (re-matches #"^[\-\d\W]+$" s))
 
 (defn- split-at-separators [s]
   (str/split s #"\r?\n|\W0"))
 
-(defn into-literals [s]
+(defn str-to-intset 
+  "convert string of space separated ints to proper set of signed ints"
+  [s]
   (-> s
     (str/split #" ")
     (strcoll-to-intcoll)
     (set)))
 
-(defn load-sat
-  "load sat problem into clojure data structure"
+(defn cnfstr-to-intsets
+  "convert string of cnf-clauses into coll of int-sets"
   [s]
   (let [lines (split-at-separators s)]
     (->> lines
      (map #(str/trim %))
-     (filter starts-with-digit)
-     (map into-literals))))
+     (filter ints-only?)
+     (map str-to-intset))))
